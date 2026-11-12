@@ -1,0 +1,7 @@
+[
+    { "productId": 1, "user": "Ana", "rating": 5, "comment": "Leitura obrigatória para quem programa." },
+    { "productId": 1, "user": "Bruno", "rating": 4, "comment": "Ótimos exemplos de refatoração." },
+    { "productId": 2, "user": "Carla", "rating": 5, "comment": "Muito didático e atual." },
+    { "productId": 2, "user": "Diego", "rating": 5, "comment": "Me ajudou muito na disciplina." },
+    { "productId": 3, "user": "Eduarda", "rating": 4, "comment": "Clássico, mas um pouco denso." }
+]

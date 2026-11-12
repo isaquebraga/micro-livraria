@@ -1,6 +1,7 @@
 const express = require('express');
 const shipping = require('./shipping');
 const inventory = require('./inventory');
+const review = require('./review');
 const cors = require('cors');
 
 const app = express();
@@ -58,6 +59,20 @@ app.get('/product/:id', (req, res, next) => {
             // microsserviço (um arquivo JSON) com os dados
             // do produto pesquisado
             res.json(product);
+        }
+    });
+});
+
+/**
+ * Retorna as avaliações de um produto via ReviewService
+ */
+app.get('/reviews/:id', (req, res, next) => {
+    review.GetReviews({ id: req.params.id }, (err, data) => {
+        if (err) {
+            console.error(err);
+            res.status(500).send({ error: 'something failed :(' });
+        } else {
+            res.json(data.reviews);
         }
     });
 });

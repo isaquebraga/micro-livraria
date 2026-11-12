@@ -28,6 +28,7 @@ A micro-livraria possui quatro microsserviços:
 -   Controller: microsserviço responsável por intermediar a comunicação entre o front-end e o backend do sistema.
 -   Shipping: microserviço para cálculo de frete.
 -   Inventory: microserviço para controle do estoque da livraria.
+-   Review: microsserviço de avaliações dos livros (adicionado neste fork, ver seção [Novo Microsserviço](#novo-microsserviço-review-avaliações)).
 
 Os quatro microsserviços estão implementados em **JavaScript**, usando o Node.js para execução dos serviços no back-end.
 
@@ -380,6 +381,41 @@ onde:
 
 -   `docker rmi`: comando para remover uma imagem.
 -   `micro-livraria/shipping`: nome da imagem que será removida.
+
+## Novo Microsserviço: Review (Avaliações)
+
+Como extensão do exercício, foi adicionado um quinto microsserviço, chamado `Review`, responsável pelas **avaliações dos livros** (usuário, nota de 1 a 5 e comentário). Ele segue a mesma arquitetura dos demais:
+
+| Arquivo | Função |
+| --- | --- |
+| [proto/review.proto](proto/review.proto) | Define a operação `GetReviews(ReviewPayload) returns (ReviewsResponse)` |
+| [services/review/index.js](services/review/index.js) | Servidor gRPC (porta 3003) |
+| [services/review/reviews.json](services/review/reviews.json) | Avaliações cadastradas |
+| [services/controller/review.js](services/controller/review.js) | Cliente gRPC usado pelo Controller |
+| [services/controller/index.js](services/controller/index.js) | Nova rota REST `GET /reviews/:id` |
+| [services/frontend/index.js](services/frontend/index.js) | Botão "Ver Avaliações" em cada livro |
+| [review.Dockerfile](review.Dockerfile) | Imagem Docker do serviço |
+
+Fluxo: `Front-end --REST--> Controller --gRPC--> Review`
+
+### Executando com Docker
+
+Na raiz do projeto, crie a imagem e rode o container:
+
+```
+docker build -t micro-livraria/review -f review.Dockerfile ./
+docker run -ti --name review -p 3003:3003 micro-livraria/review
+```
+
+Em outro terminal, inicie os demais serviços (`npm run start`) e o Shipping (ver Tarefa #2). Para testar:
+
+```
+curl -i -X GET http://localhost:3000/reviews/1
+```
+
+Ou abra http://localhost:5000 e clique em **Ver Avaliações** em um dos livros.
+
+Sem Docker, também é possível rodar o serviço com `npm run start-review`.
 
 ## Comentários Finais
 

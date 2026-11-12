@@ -28,6 +28,7 @@ function newBook(book) {
                             <a class="button button-shipping is-info" data-id="${book.id}"> Calcular Frete </a>
                         </div>
                     </div>
+                    <button class="button button-reviews is-light is-fullwidth mb-2" data-id="${book.id}">Ver Avaliações</button>
                     <button class="button button-buy is-success is-fullwidth">Comprar</button>
                 </div>
             </div>
@@ -48,6 +49,30 @@ function calculateShipping(id, cep) {
         })
         .catch((err) => {
             swal('Erro', 'Erro ao consultar frete', 'error');
+            console.error(err);
+        });
+}
+
+function showReviews(id) {
+    fetch('http://localhost:3000/reviews/' + id)
+        .then((data) => {
+            if (data.ok) {
+                return data.json();
+            }
+            throw data.statusText;
+        })
+        .then((reviews) => {
+            if (reviews.length === 0) {
+                swal('Avaliações', 'Este livro ainda não tem avaliações', 'info');
+                return;
+            }
+            const text = reviews
+                .map((review) => `${'★'.repeat(review.rating)} ${review.user}: ${review.comment}`)
+                .join('\n\n');
+            swal('Avaliações', text);
+        })
+        .catch((err) => {
+            swal('Erro', 'Erro ao consultar avaliações', 'error');
             console.error(err);
         });
 }
@@ -73,6 +98,12 @@ document.addEventListener('DOMContentLoaded', function () {
                         const id = e.target.getAttribute('data-id');
                         const cep = document.querySelector(`.book[data-id="${id}"] input`).value;
                         calculateShipping(id, cep);
+                    });
+                });
+
+                document.querySelectorAll('.button-reviews').forEach((btn) => {
+                    btn.addEventListener('click', (e) => {
+                        showReviews(e.target.getAttribute('data-id'));
                     });
                 });
 
